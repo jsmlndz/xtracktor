@@ -28,7 +28,7 @@ if [ ! -f "$X" ]; then
 fi
 
 # sha256 of manifest.txt for xtracktor 1.2.0 - every WAV and SFZ it extracts
-# from the fixture.
+# from the fixture. Unchanged in 1.2.1, which changed only a report line.
 REFERENCE="08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298"
 
 mkdir -p "$R/logs"

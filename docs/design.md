@@ -2,7 +2,7 @@
 
 [README](../README.md) · [Usage guide](usage.md) · [Format](format.md) · **Design and verification**
 
-- **Version:** 1.2.0
+- **Version:** 1.2.1
 - **What it is:** a standard-library-only Python CLI that turns `.mse` sample banks into per-preset WAV folders plus one SFZ instrument per preset, and proves the result correct.
 - **History:** consolidated from five single-purpose scripts (`mse_index.py`, `pitch_check.py`, `wav_check.py`, `mse_survey.py`, `make_quirk_fixture.py`) into one tool, without changing a byte of output.
 
@@ -71,7 +71,7 @@ It builds the synthetic test bank, runs every command against it, and reports fi
 2. **GATE 2:** `extract --apply`, then `audit --zones` → `VERDICT: COMPLETE AND BYTE-ACCURATE`
 3. **GATE 3:** `pitch` on the pitched test preset → `VERDICT: every stored root matches the measured pitch`
 4. **HEALTH:** `wavcheck` → `ok 13`
-5. **MATCH:** the SHA-256 of the output manifest (every WAV and SFZ written) equals the reference fingerprint. For 1.2.0 that is `08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298`. It is a hash of synthetic test output, not a secret.
+5. **MATCH:** the SHA-256 of the output manifest (every WAV and SFZ written) equals the reference fingerprint. For 1.2.0 and 1.2.1 that is `08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298`. It is a hash of synthetic test output, not a secret.
 
 A passing run ends like this:
 
@@ -134,9 +134,18 @@ The [CI workflow](../.github/workflows/ci.yml) runs `baseline.sh` on Linux and m
 - **Test bank:** 5 × PASS on Python 3.11, 3.12 and 3.13 (Linux) with any `PYTHONHASHSEED`, against the new reference, and 5 × PASS on Python 3.9 and 3.10 (Linux).
 - **macOS:** 5 × PASS on Python 3.9, 3.10, 3.11, 3.12 and 3.13 on the GitHub Actions `macos-latest` runner (CI).
 
+**1.2.1:**
+
+- **One report line changed:** the `zones` legend. Every other command prints the same as 1.2.0 on the test bank, and the output manifest is identical.
+- **Test bank:** 5 × PASS on Python 3.9, 3.10, 3.11, 3.12 and 3.13 (Linux), against the unchanged reference.
+
 ## 6. Change history
 
 The [changelog](../CHANGELOG.md) has the same history in summary form.
+
+**1.2.1: cosmetic fix.**
+
+- **`zones`:** the report's legend line printed `%%midi` / `%%<=frames` instead of `%midi` / `%<=frames`. The bug was inherited from the original script, and nothing reads that line.
 
 **1.2.0: generic test bank.**
 
@@ -170,7 +179,6 @@ The [changelog](../CHANGELOG.md) has the same history in summary form.
 
 ## 8. Known issues and possible future work
 
-- **Cosmetic:** one legend line in the `zones` report prints `%%midi` / `%%<=frames` instead of `%midi` / `%<=frames`. It was inherited from the original script, and nothing reads that line. Fixing it doesn't change the reference fingerprint.
 - **`pitch` on drum kits** reports meaningless deltas. Drum zones play at natural pitch, so their root is their trigger key. Run `pitch` on pitched presets only.
 - **`audit --quick`** compares only the first 64 KiB of each sample, so it misses damage beyond that point. The full audit is the proof.
 - **Untested:** non-16-bit or FLAC-sourced banks, and `.mse` libraries other than the one it was developed against.
