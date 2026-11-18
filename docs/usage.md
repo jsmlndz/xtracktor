@@ -1,11 +1,13 @@
-# xtracktor — Usage Guide
+# xtracktor usage guide
 
-`xtracktor` turns `.mse` sample banks into playable sampler instruments: one folder per preset containing WAV files and one `.sfz` instrument. It can also prove the result is correct and help you inspect banks you haven't seen before.
+[README](../README.md) · **Usage guide** · [Format](format.md) · [Design and verification](design.md)
+
+`xtracktor` turns `.mse` sample banks into playable sampler instruments: one folder per preset, containing WAV files and one `.sfz` instrument. It can also prove the result is correct and help you inspect banks you haven't seen before. ([What is an `.mse` bank?](format.md))
 
 This guide covers:
-- **Part 1:** the main workflow, from `.mse` banks to verified preset SFZ instruments.
-- **Part 2:** the tool's other abilities, with example commands.
-- **Part 3:** a quick reference.
+- [**Part 1:**](#part-1-from-mse-banks-to-preset-sfz-instruments) the main workflow, from `.mse` banks to verified preset SFZ instruments.
+- [**Part 2:**](#part-2-other-things-xtracktor-can-do) the tool's other abilities, with example commands.
+- [**Part 3:**](#part-3-quick-reference) a quick reference.
 
 > **Example output.** Every example below is real output from the built-in test bank (`xtracktor fixture`), a small synthetic `.mse` that reproduces the structure of real banks. On a full commercial library (three banks, 2,051 samples, 206 presets) the same commands produce the same kind of report, just longer.
 
@@ -15,7 +17,7 @@ This guide covers:
 
 **Requirements:** Python 3.9 or newer (tested on 3.9 through 3.13). Nothing else is needed. If numpy is installed, `pitch` uses it to run faster, with identical results.
 
-**Running it:** download `xtracktor.pyz` from the project's Releases page and run it with Python:
+**Running it:** download `xtracktor.pyz` from the project's [Releases page](https://github.com/jsmlndz/xtracktor/releases) and run it with Python. To build it from source instead, run `python3 tools/build_pyz.py` in a clone of the repository; it writes `dist/xtracktor.pyz`.
 
 ```bash
 python3 xtracktor.pyz --help              # list all commands
@@ -36,7 +38,7 @@ alias xt='python3 /path/to/xtracktor.pyz'
 
 ---
 
-# Part 1 — From `.mse` banks to preset SFZ instruments
+# Part 1: From `.mse` banks to preset SFZ instruments
 
 Set two variables once per terminal window, so the commands stay short:
 
@@ -45,7 +47,7 @@ BANKS=/path/to/banks          # folder containing the .mse files
 OUT=/path/to/output           # where the instruments will go
 ```
 
-## Step 1 — Check the banks parse
+## Step 1: Check the banks parse
 
 ```bash
 python3 xtracktor.pyz verify --mse-dir "$BANKS"
@@ -77,7 +79,7 @@ VERDICT: 1 record(s) skipped, 0 preset folder(s) without a display name
 
 A skipped bare filename is a metadata reference inside the bank, not audio, so nothing is missing. On a full library, expect every folder to get a display name.
 
-## Step 2 — Check the zone data (key ranges, root notes, loops)
+## Step 2: Check the zone data (key ranges, root notes, loops)
 
 ```bash
 python3 xtracktor.pyz zonecheck --mse-dir "$BANKS"
@@ -97,7 +99,7 @@ The "sample zones" list shows what each sample will become in the instrument:
 - `FIXED` marks a drum or one-shot. It plays at its natural pitch on its key, so its effective root (`eff`) is its own key, not the stored counter (`root`).
 - `pitch` marks a pitched sample stretched across a key range around its root note.
 
-## Step 3 — Preview, then extract
+## Step 3: Preview, then extract
 
 ```bash
 # preview: counts, space needed, free-space check - writes nothing
@@ -138,7 +140,7 @@ output/
 └── ... one folder per preset
 ```
 
-## Step 4 — Prove the extraction is correct
+## Step 4: Prove the extraction is correct
 
 ```bash
 python3 xtracktor.pyz audit --mse-dir "$BANKS" --out-dir "$OUT" --zones
@@ -166,7 +168,11 @@ VERDICT: COMPLETE AND BYTE-ACCURATE - every expected sample is present and its a
 
 **`wavcheck`** confirms every file is a structurally valid WAV: `13 file(s) checked` / `ok 13`.
 
-## Step 5 — Prove the root notes against the actual audio
+On a full library the end of `extract --apply` and the full audit look like this (2,051 samples; paths and bank names redacted):
+
+![End of extract --apply and audit --zones on a full library: 2,051 samples written into 206 preset folders, all 2,051 audited ok, verdict COMPLETE AND BYTE-ACCURATE](images/xtracktor_extract.png)
+
+## Step 5: Prove the root notes against the actual audio
 
 ```bash
 python3 xtracktor.pyz pitch --dir "$OUT/03-Bell Pad"
@@ -185,11 +191,17 @@ BP002.wav     C3    48.03  0.918     48       0  matches stored root
   VERDICT: every stored root matches the measured pitch
 ```
 
+Why this matters: an earlier version read the wrong field as the root note, and pitched presets played up to 39 semitones sharp while the byte-for-byte audit still passed. See [Root notes](format.md#root-notes-the-subtlety-that-caused-a-real-bug).
+
 > **Run `pitch` on pitched presets (pianos, synths, pads), not drum kits.** A drum zone deliberately plays at its natural pitch, so its root is the key that triggers it, not the note it sounds. On a kit the deltas are meaningless, and the verdict can wrongly say the roots disagree.
 
-## Step 6 — Load an instrument in your sampler
+## Step 6: Load an instrument in your sampler
 
 Each preset folder is one instrument. Open its `.sfz` in an SFZ-capable sampler (tested in DirectWave in FL Studio). Keep the `.sfz` in the same folder as its WAVs: it refers to them by filename.
+
+A pitched preset loaded in DirectWave. Each zone's key range and root note come from the SFZ:
+
+![DirectWave in FL Studio showing an extracted pitched preset with five zones, each with its own key range and root note](images/xtracktor_fl_dw.png)
 
 **What's inside an SFZ** (a pitched preset):
 
@@ -214,7 +226,7 @@ Each preset folder is one instrument. Open its `.sfz` in an SFZ-capable sampler 
 | `pitch_keytrack=0` | Drum zones only: don't transpose with the key |
 | `loop_mode`, `loop_start`, `loop_end` | The sustain loop |
 
-The SFZ matters because a WAV's own `smpl` chunk can only store a root note and loop points. Key ranges and velocity layers live only in the SFZ.
+The SFZ matters because a WAV's own `smpl` chunk can only store a root note and loop points. Key ranges and velocity layers live only in the SFZ (see [Why SFZ as well as `smpl`](format.md#why-sfz-as-well-as-smpl)).
 
 ### The whole workflow in one block
 
@@ -233,7 +245,7 @@ python3 xtracktor.pyz pitch     --dir "$OUT/<a pitched preset>"
 
 ---
 
-# Part 2 — Other things xtracktor can do
+# Part 2: Other things xtracktor can do
 
 ## 2.1 Look inside a bank before extracting anything
 
@@ -422,14 +434,18 @@ python3 xtracktor.pyz pitch --dir "$OUT/<a pitched preset>" --min-confidence 0.8
 
 ## 2.8 Regression test after any change to xtracktor
 
-`xtracktor` carries its own synthetic test bank, reproducing the structural quirks of real banks. `tools/baseline.sh` builds it, runs the full workflow on it, and compares the result against a fixed fingerprint:
+`xtracktor` carries its own synthetic test bank, reproducing the structural quirks of real banks. [`tools/baseline.sh`](../tools/baseline.sh) builds it, runs the full workflow on it, and compares the result against a fixed fingerprint. From a clone of the repository:
 
 ```bash
 python3 tools/build_pyz.py
 bash tools/baseline.sh dist/xtracktor.pyz results/check-$(date +%Y%m%d)
 ```
 
-Expect five `PASS` lines. The test bank is identical on every machine and Python version, so the fingerprint is too.
+Expect five `PASS` lines. The test bank is identical on every machine and Python version, so the fingerprint is too. [Acceptance gates](design.md#3-acceptance-gates) explains each check.
+
+The build and the five checks on macOS (paths redacted):
+
+![Terminal on macOS: building xtracktor.pyz, then baseline.sh reporting PASS for GATE 1, GATE 2, GATE 3, HEALTH and MATCH, with 17 output files fingerprinted](images/xtracktor_checks.png)
 
 To experiment by hand on the test bank:
 
@@ -467,12 +483,12 @@ The reporting commands (`verify`, `index`, `zones`, `survey`, `match`, `wavcheck
 | Deleted the output folder | Re-run Part 1, steps 3–5. The banks are the source; the result is byte-identical. |
 | `audit` shows `audio-mismatch` on many files, or WAVs that are all silence | Usually memory pressure on the machine during the write. Run `extract --apply` again, then `audit`. |
 | Interrupted an extraction | Run the same `extract --apply` again. Finished files are rewritten; no partial file was left. |
-| A sampler won't load the SFZ files | Try `sfz --no-keytrack --apply` (section 2.4). Make sure each `.sfz` is next to its WAVs. |
+| A sampler won't load the SFZ files | Try `sfz --no-keytrack --apply` ([section 2.4](#24-rebuild-only-the-sfz-files-seconds-audio-untouched)). Make sure each `.sfz` is next to its WAVs. |
 | Stray files in the output | `audit` lists them as `extra`; delete them. |
 
 ---
 
-# Part 3 — Quick reference
+# Part 3: Quick reference
 
 | Command | What it does | Writes files? |
 |---|---|---|

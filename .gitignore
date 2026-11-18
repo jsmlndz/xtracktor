@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+dist/
+results/
+.DS_Store
+# never commit audio, banks or extracted output
+*.mse
+*.wav
+*.sfz
+*.aif
+*.aiff
+*.flac
+*.pyz
+extracted*/
