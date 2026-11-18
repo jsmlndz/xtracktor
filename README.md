@@ -1,5 +1,7 @@
 # xtracktor
 
+![From opaque bytes to a playable instrument: an .mse header on one side, a keyboard mapped with key ranges, root notes and loops on the other](docs/images/xtracktor_social.png)
+
 **Turn `.mse` sample banks into playable SFZ instruments — verified byte for byte.**
 
 [![CI](https://github.com/jsmlndz/xtracktor/actions/workflows/ci.yml/badge.svg)](https://github.com/jsmlndz/xtracktor/actions/workflows/ci.yml)
@@ -21,6 +23,14 @@ On a commercial sample library (three banks, about 2.4 GB):
 - **Every WAV structurally valid**: `wavcheck` reports `ok 2051`
 - **Root notes verified by measuring the actual pitch** of the audio: `delta 0` on every pitched preset
 - **Plays correctly in DirectWave** (FL Studio), with correct key mapping and pitch
+
+*Extraction and full audit on the commercial library (paths and bank names redacted):*
+
+![End of extract --apply and audit --zones on the commercial library: 2,051 samples written into 206 preset folders, all 2,051 audited ok, verdict COMPLETE AND BYTE-ACCURATE](docs/images/xtracktor_extract.png)
+
+*An extracted pitched preset in DirectWave (FL Studio): five zones, each with its own key range and root note:*
+
+![DirectWave in FL Studio showing an extracted pitched preset with five zones, each with its own key range and root note](docs/images/xtracktor_fl_dw.png)
 
 ## Quick start
 

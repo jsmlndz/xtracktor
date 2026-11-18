@@ -168,6 +168,10 @@ VERDICT: COMPLETE AND BYTE-ACCURATE - every expected sample is present and its a
 
 **`wavcheck`** confirms every file is a structurally valid WAV: `13 file(s) checked` / `ok 13`.
 
+On a full library the end of `extract --apply` and the full audit look like this (2,051 samples; paths and bank names redacted):
+
+![End of extract --apply and audit --zones on a full library: 2,051 samples written into 206 preset folders, all 2,051 audited ok, verdict COMPLETE AND BYTE-ACCURATE](images/xtracktor_extract.png)
+
 ## Step 5: Prove the root notes against the actual audio
 
 ```bash
@@ -194,6 +198,10 @@ Why this matters: an earlier version read the wrong field as the root note, and 
 ## Step 6: Load an instrument in your sampler
 
 Each preset folder is one instrument. Open its `.sfz` in an SFZ-capable sampler (tested in DirectWave in FL Studio). Keep the `.sfz` in the same folder as its WAVs: it refers to them by filename.
+
+A pitched preset loaded in DirectWave. Each zone's key range and root note come from the SFZ:
+
+![DirectWave in FL Studio showing an extracted pitched preset with five zones, each with its own key range and root note](images/xtracktor_fl_dw.png)
 
 **What's inside an SFZ** (a pitched preset):
 
@@ -434,6 +442,10 @@ bash tools/baseline.sh dist/xtracktor.pyz results/check-$(date +%Y%m%d)
 ```
 
 Expect five `PASS` lines. The test bank is identical on every machine and Python version, so the fingerprint is too. [Acceptance gates](design.md#3-acceptance-gates) explains each check.
+
+The build and the five checks on macOS (paths redacted):
+
+![Terminal on macOS: building xtracktor.pyz, then baseline.sh reporting PASS for GATE 1, GATE 2, GATE 3, HEALTH and MATCH, with 17 output files fingerprinted](images/xtracktor_checks.png)
 
 To experiment by hand on the test bank:
 
