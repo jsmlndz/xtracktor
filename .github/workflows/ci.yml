@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: baseline (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        # actions/setup-python has no Python 3.9 build for the Ubuntu release
+        # behind ubuntu-latest, so run 3.9 on the newest Ubuntu that has one.
+        exclude:
+          - os: ubuntu-latest
+            python: "3.9"
+        include:
+          - os: ubuntu-24.04
+            python: "3.9"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      # numpy is deliberately not installed: the pure-Python pitch path gives
+      # identical results and keeps CI dependency-free.
+      - name: Build dist/xtracktor.pyz
+        run: python3 tools/build_pyz.py
+
+      - name: Run the acceptance gates
+        run: bash tools/baseline.sh dist/xtracktor.pyz results
+
+      - name: Upload results on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: results-${{ matrix.os }}-python-${{ matrix.python }}
+          path: results/

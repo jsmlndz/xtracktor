@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Build dist/xtracktor.pyz
+        run: python3 tools/build_pyz.py
+
+      - name: Check the tag matches the version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BUILT="$(python3 dist/xtracktor.pyz --version | awk '{print $2}')"
+          if [ "$VERSION" != "$BUILT" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match xtracktor $BUILT"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Run the acceptance gates
+        run: bash tools/baseline.sh dist/xtracktor.pyz results
+
+      - name: Take the release notes from CHANGELOG.md
+        run: |
+          awk -v v="$VERSION" '
+            /^## / { if (found) exit; h = $2; gsub(/[][]/, "", h); if (h == v) { found = 1; next } }
+            found && /^\[[^]]*\]: / { next }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error::CHANGELOG.md has no section for $VERSION"
+            exit 1
+          fi
+          cat notes.md
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/xtracktor.pyz tools/baseline.sh \
+            --verify-tag --title "xtracktor $VERSION" --notes-file notes.md
