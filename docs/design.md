@@ -1,6 +1,6 @@
 # xtracktor: design and verification
 
-[README](../README.md) · [Usage guide](usage.md) · [Format](format.md) · **Design and verification**
+[README](../README.md) · [Usage guide](usage.md) · [Notes](notes.md) · **Design and verification**
 
 - **Version:** 1.2.2
 - **What it is:** a standard-library-only Python CLI that turns `.mse` sample banks into per-preset WAV folders plus one SFZ instrument per preset, and proves the result correct.
@@ -97,7 +97,7 @@ Its pitched samples are generated at their declared root, so GATE 3 is meaningfu
 
 **When output changes on purpose, update `REFERENCE` in `baseline.sh`.**
 
-Each gate has caught a real bug. GATE 2 alone is not enough: with the old [root-note bug](format.md#root-notes-the-subtlety-that-caused-a-real-bug) reintroduced, GATE 2 still passes and only GATE 3 fails. Byte accuracy does not prove the roots are right.
+Each gate has caught a real bug. GATE 2 alone is not enough: with the old [root-note bug](notes.md#root-notes-should-be-analyzed) reintroduced, GATE 2 still passes and only GATE 3 fails. Byte accuracy does not prove the roots are right.
 
 The [CI workflow](../.github/workflows/ci.yml) runs `baseline.sh` on Linux and macOS with Python 3.9–3.13 on every push and pull request.
 
@@ -185,7 +185,7 @@ The [changelog](../CHANGELOG.md) has the same history in summary form.
 1. **Never seed test data from Python's `hash()`.** It is salted per process, and Python 3.11 changed the string algorithm from SipHash-2-4 to SipHash-1-3. So `PYTHONHASHSEED=0` gave different test audio on Python 3.9 and 3.13. The giveaway: files not seeded by `hash()` matched across machines, and the 11 that were did not.
 2. **Prove a refactor by output identity, not just by gates.** The manifest diff and the 58-case differential suite are what proved the consolidation safe. Gates alone would have allowed silent drift.
 3. **RSS overstates mmap memory.** Mapped file pages count toward RSS but are reclaimable cache. Measure private (anonymous) memory to compare against a whole-file read.
-4. **Internal consistency is not correctness** (see [the format notes](format.md#root-notes-the-subtlety-that-caused-a-real-bug)). The root-note bug passed a byte-accurate audit and was caught only by measuring pitch.
+4. **Internal consistency is not correctness** (see [the notes](notes.md#root-notes-should-be-analyzed)). The root-note bug passed a byte-accurate audit and was caught only by measuring pitch.
 
 ## 8. Known issues and possible future work
 

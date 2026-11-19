@@ -6,7 +6,6 @@
 
 - [Root notes should be analyzed](#root-notes-should-be-analyzed)
 - [Known anomaly](#known-anomaly)
-- [Unresolved fields](#unresolved-fields)
 - [Results](#results)
 - [Why SFZ as well as `smpl`](#why-sfz-as-well-as-smpl)
 - [Lessons learned](#lessons-learned)

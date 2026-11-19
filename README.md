@@ -133,7 +133,7 @@ xtracktor is an independent project, not affiliated with or endorsed by any samp
 
 ## Credits
 
-[MSE-Extract-Tool](https://github.com/robmurru/MSE-Extract-Tool) (MIT), whose documented per-sample record layout was the starting point. xtracktor extends it with the file header, zone data, preset grouping and root-note rules; see the [comparison](docs/format.md#comparison-with-mse-extract-tool).
+[MSE-Extract-Tool](https://github.com/robmurru/MSE-Extract-Tool) (MIT), whose documented per-sample record layout was the starting point. xtracktor extends it with the file header, zone data, preset grouping and root-note rules; see the [comparison](docs/notes.md#comparison-with-mse-extract-tool).
 
 ## Licence
 
