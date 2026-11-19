@@ -5,6 +5,7 @@
 ## Contents
 
 - [Root notes should be analyzed](#root-notes-should-be-analyzed)
+- [Audio characteristics](#audio-characteristics)
 - [Known anomaly](#known-anomaly)
 - [Results](#results)
 - [Why SFZ as well as `smpl`](#why-sfz-as-well-as-smpl)
@@ -77,7 +78,7 @@ A WAV `smpl` chunk carries only a root note and loop points. It **cannot express
 | Extract PCM → WAV | ✅ | ✅ |
 | Loop points in `smpl` | ✅ | ✅ |
 | Root note | ✅ (read from data, drum-aware) | ✅ |
-| File-level header documented | ✅ | ❌ |
+| File-level header decoded | ✅ | ❌ |
 | Preset grouping and display names | ✅ | ❌ |
 | Key ranges, velocity layers | ✅ SFZ | ❌ |
 | Playable instrument output | ✅ SFZ | ❌ |

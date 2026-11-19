@@ -119,7 +119,7 @@ Only measuring the audio caught it. `pitch` now estimates each sample's fundamen
 ## Documentation
 
 - [Usage guide](docs/usage.md): the full workflow, every command and option, with example output
-- [Notes](docs/notes.md): unresolved fields, notes, why SFZ
+- [Notes](docs/notes.md): root notes, results, why SFZ, comparison with MSE-Extract-Tool, legal note
 - [Design and verification](docs/design.md): architecture, acceptance gates, invariants, verification record and change history
 - [Changelog](CHANGELOG.md)
 
