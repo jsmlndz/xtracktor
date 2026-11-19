@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](docs/design.md#2-source-layout)
 
-xtracktor is a command-line tool written in Python, using only the standard library. It reads `.mse` banks, the bank format of a cross-platform tool that sound developers use to build sample-based virtual instruments, and writes one folder of WAV files plus one SFZ instrument per preset. Then it proves the result correct.
+xtracktor is a command-line tool written in Python, using only the standard library. It reads `.mse` banks, and writes one folder of WAV files plus one SFZ instrument per preset. Then it proves the result correct.
 
 ## Why
 
