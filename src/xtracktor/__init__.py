@@ -1,7 +1,7 @@
 """xtracktor - extract, verify and inspect the samples in .mse banks.
 
 One tool replacing mse_index.py, pitch_check.py, wav_check.py, mse_survey.py
-and make_quirk_fixture.py. Python 3.8+, standard library only (numpy is used
+and make_quirk_fixture.py. Python 3.9+, standard library only (numpy is used
 by `pitch` if present, with identical results without it).
 
 Commands
@@ -31,4 +31,4 @@ Invariants - a change that breaks one of these is a bug
 7. `sfz` stays separate from `extract`.
 """
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"

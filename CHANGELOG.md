@@ -4,6 +4,12 @@ All notable changes to xtracktor are documented here. The format is based on [Ke
 
 The [verification record](docs/design.md#5-verification-record) lists how each version was tested.
 
+## [1.2.1]
+
+### Fixed
+
+- The legend line of the `zones` report printed `%%midi` / `%%<=frames` instead of `%midi` / `%<=frames`. Nothing reads that line, and the output fingerprint in `tools/baseline.sh` is unchanged.
+
 ## [1.2.0]
 
 ### Changed
@@ -42,4 +48,5 @@ Five single-purpose scripts (`mse_index.py`, `pitch_check.py`, `wav_check.py`, `
 - Atomic writes: Ctrl-C during `extract` no longer leaves a partial WAV under its real name. Nothing is left behind, and the exit status is 130.
 - `verify --max` now works; it was a no-op.
 
+[1.2.1]: https://github.com/jsmlndz/xtracktor/releases/tag/v1.2.1
 [1.2.0]: https://github.com/jsmlndz/xtracktor/releases/tag/v1.2.0

@@ -701,7 +701,7 @@ def cmd_zones(args):
 
     print("\ncandidate fields - %d record(s) examined" % total)
     print("  each row is one 4-byte little-endian slot in the zone block")
-    print("  %%midi = share in 0..127   %%<=frames = share in 0..frame_count")
+    print("  %midi = share in 0..127   %<=frames = share in 0..frame_count")
     print()
     print("  %-6s %7s %7s %9s %9s %7s %12s %12s"
           % ("offset", "%zero", "%midi", "%<=frames", "%=frames", "%neg",
