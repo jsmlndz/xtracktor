@@ -1,4 +1,4 @@
-# The `.mse` sample-bank format
+# Additional Notes 
 
 [Design and verification](design.md)
 
