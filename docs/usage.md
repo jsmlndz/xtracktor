@@ -347,92 +347,7 @@ preview of 01-Drum Kit.sfz:
 
 To go back to the default, run it again without `--no-keytrack`.
 
-## 2.5 Check and identify someone else's extraction
-
-**Is it even valid audio?** A third-party extraction of the original library produced 2,016 of 2,051 files with no WAV header at all. `wavcheck` diagnoses exactly how each file is broken:
-
-```bash
-python3 xtracktor.pyz wavcheck --dir /path/to/their/wavs --csv health.csv
-```
-
-*(deliberately broken test files)*
-
-```
-EMPTY      b_empty.wav          zero-length file
-NOT-RIFF   c_notriff.wav        missing RIFF/WAVE signature
-TRUNCATED  d_truncated.wav      data chunk claims 38400 bytes, only 19200 present (missing 19200)
-RIFF-SIZE  e_riffsize.wav       RIFF size 12345, expected 4036
-BAD-FMT    f_badfmt_rate.wav    data chunk before a valid fmt
-... 6 more problem file(s)
-```
-
-**Which preset did each file come from?** Tools that number their output (`sample_001.wav`, …) lose the names. `match` identifies each file by fingerprinting its audio, so the filenames don't matter:
-
-```bash
-python3 xtracktor.pyz match --mse-dir "$BANKS" --wav-dir /path/to/their/wavs --csv map.csv
-```
-
-```
-sample_001.wav -> 01-Drum Kit                DK000.wav
-sample_002.wav -> 01-Drum Kit                DK001.wav
-...
-sample_012.wav -> 01-Drum Kit                DKSHARED.wav   <- exact | shared by 2 presets: 01-Drum Kit, 23-Soft Lead
-stray.wav      -> -                          -   <- no match
-
-12 exact, 0 audio-only, 1 unmatched, of 13 WAV files
-```
-
-The CSV gives each file's preset, original name and original path inside the bank. Use it to rename or sort the files.
-
-## 2.6 Faster audits, full reports, and what a problem looks like
-
-```bash
-# quick: compares only the first 64 KiB of each sample - much faster. Catches
-# missing files, wrong lengths, swapped or zero-filled audio; misses damage
-# (including truncation) past the first 64 KiB, so use the full audit to be sure
-python3 xtracktor.pyz audit --mse-dir "$BANKS" --out-dir "$OUT" --quick
-
-# full report: every preset folder listed, plus a CSV row per sample
-python3 xtracktor.pyz audit --mse-dir "$BANKS" --out-dir "$OUT" --zones --all --csv audit.csv
-```
-
-A damaged extraction (one file deleted, one byte flipped in another, a stray copy added):
-
-```
-missing          01-Drum Kit/DK002.wav       no file at expected path
-audio-mismatch   03-Bell Pad/BP001.wav       sha256 differs from bank PCM
-
-per-preset reconciliation:
-  01-Drum Kit     5 expected     4 verified    1 extra   <-- MISMATCH
-  03-Bell Pad     3 expected     2 verified    0 extra   <-- MISMATCH
-
-  ok               11
-  missing          1
-  audio-mismatch   1
-  extra            1 (files on disk with no matching record)
-      01-Drum Kit/DK000 copy.wav
-
-VERDICT: problems found, see above
-```
-
-**The fix is always the same:** run `extract --apply` again, which rewrites every sample from the banks, then delete any files `audit` lists as `extra`.
-
-## 2.7 Pitch-check any folder
-
-```bash
-# a whole library at once, saved to a spreadsheet (--max 0 skips the long listing)
-python3 xtracktor.pyz pitch --dir "$OUT" --csv pitch.csv --max 0
-
-# stricter: count only very confident pitch readings
-python3 xtracktor.pyz pitch --dir "$OUT/<a pitched preset>" --min-confidence 0.8
-```
-
-- **Low confidence:** samples below `--min-confidence` (default 0.3) are listed as `unpitched/low confidence`, which is normal for percussion and noise.
-- **Constant offset:** if every delta is the same, the verdict says so. That means a constant offset, which is easy to correct.
-- **Varying deltas:** these mean the roots are being read wrong.
-- **Drum kits:** as in Part 1, judge the verdict on pitched presets only.
-
-## 2.8 Regression test after any change to xtracktor
+## 2.5 Regression test after any change to xtracktor
 
 `xtracktor` carries its own synthetic test bank, reproducing the structural quirks of real banks. [`tools/baseline.sh`](../tools/baseline.sh) builds it, runs the full workflow on it, and compares the result against a fixed fingerprint. From a clone of the repository:
 
@@ -455,7 +370,7 @@ python3 xtracktor.pyz extract --mse-dir /tmp/fx/banks --out-dir /tmp/fx/out --ap
 python3 xtracktor.pyz match   --mse-dir /tmp/fx/banks --wav-dir /tmp/fx/extracted
 ```
 
-## 2.9 Use it in scripts
+## 2.6 Use it in scripts
 
 Every command sets an exit status, so it can drive scripts:
 
@@ -476,7 +391,7 @@ fi
 
 The reporting commands (`verify`, `index`, `zones`, `survey`, `match`, `wavcheck`, `pitch`, `sfz`) exit `0` whenever they run, even if what they report is bad. Read their verdict lines instead.
 
-## 2.10 Recovering from accidents
+## 2.7 Recovering from accidents
 
 | Situation | What to do |
 |---|---|
