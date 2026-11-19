@@ -90,7 +90,7 @@ Version 1.0.0 merged five single-purpose scripts into one CLI. A 58-case differe
 
 ### The root-note bug: why byte accuracy isn't enough
 
-One bug passed the byte-for-byte audit completely. The first field of each zone block was misread as a zone index, so the bottom key of each zone's key range was used as the root note instead. Multisampled presets played up to **39 semitones sharp**, with an audible pitch jump at every zone boundary, yet every byte of audio and every zone field checked out as consistent.
+One bug passed the byte-for-byte audit completely. The field holding each zone's root note was misread as a zone index, so the bottom key of each zone's key range was used as the root note instead. Multisampled presets played up to **39 semitones sharp**, with an audible pitch jump at every zone boundary, yet every byte of audio and every zone field checked out as consistent.
 
 Only measuring the audio caught it. `pitch` now estimates each sample's fundamental frequency and compares it with the stored root, and GATE 3 keeps the bug from coming back: with it reintroduced, GATE 2 still passes and only GATE 3 fails. Internal consistency is not correctness.
 

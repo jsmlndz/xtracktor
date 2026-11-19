@@ -257,9 +257,6 @@ python3 xtracktor.pyz survey "$BANKS/<bank>.mse" --names-only --max 40
 
 ```
 STRINGS  51 total: 14 PATH, 37 NAME
-0x00000009  NAME  TEST-Q
-0x00000010  NAME  First Preset
-0x00000272  NAME  GUI-01-640x480.jpg
 ...
 0x00000296  NAME  3-4
 0x000002b9  NAME  +9-:

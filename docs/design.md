@@ -105,7 +105,7 @@ The [CI workflow](../.github/workflows/ci.yml) runs `baseline.sh` on Linux and m
 
 1. **Audio is copied byte for byte.** Never re-encode it, and never round-trip it through a float buffer.
 2. **`mmap` and streaming only.** Banks are 0.6–1.1 GB each, and nothing loads a whole bank into RAM.
-3. **Root-note rule.** `fixed_pitch == 1` → the root is `key_low`, and the SFZ gets `pitch_keytrack=0`. Otherwise the root is `root_note`.
+3. **Root-note rule.** Fixed-pitch (drum and one-shot) zones use their own key as the root, and the SFZ gets `pitch_keytrack=0`. Every other zone uses its stored root note.
 4. **Preset names join on the stem**, never by regex on heading strings.
 5. **No half-written file survives under its real name.** WAVs and SFZs are written to `<name>.part` and renamed only when complete. On any error or Ctrl-C the `.part` file is removed.
 6. **Dry run is the default** for anything that writes.

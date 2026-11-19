@@ -17,16 +17,16 @@
 
 ## Root notes should be analyzed
 
-**`+0` is the root note, not a zone index.** It was first misread as an index, and `key_low` was used as the root instead. The result was multisampled presets playing up to 39 semitones sharp, with an audible pitch jump at every zone boundary.
+**Each zone stores its own root note.** The field holding it was first misread as a zone index, and the bottom key of each zone's key range was used as the root instead. The result was multisampled presets playing up to 39 semitones sharp, with an audible pitch jump at every zone boundary.
 
 Two rules:
 
-1. **`fixed_pitch == 1`** (drum / one-shot zones): the sample plays at its natural pitch whatever key triggers it. Its `root_note` is an **unused ascending counter**. In the drum kit examined, `key − root` came out to a constant 36, so applying it would transpose every drum up three octaves. **Use `key_low` as the root and emit `pitch_keytrack=0`.**
-2. **`fixed_pitch == 0`** (pitched): **use `root_note` directly.**
+1. **Drum and one-shot zones**, which the bank marks as fixed-pitch: the sample plays at its natural pitch whatever key triggers it, and its stored root is an **unused counter**. In the drum kit examined, applying it would have transposed every drum up three octaves. **Use the zone's own key as the root, and emit `pitch_keytrack=0` so the sampler doesn't transpose it.**
+2. **Pitched zones:** **use the stored root note directly.**
 
-Pitched presets are laid out as a ladder where `root = key_low + 2`. The exceptions are the lowest zone, whose `key_low` is stretched to 0, and the highest, whose `key_high` is stretched to 125, so the whole keyboard is covered.
+In pitched presets, each zone covers a few keys around its root note, and the lowest and highest zones are stretched so the whole keyboard is covered.
 
-**Verified by measuring the audio.** `xtracktor pitch` estimates each sample's fundamental frequency and compares it with the stored root. On two pitched presets (16 samples), `+0` matched the measured pitch exactly. After the fix, every pitched preset reports `delta 0`.
+**Verified by measuring the audio.** `xtracktor pitch` estimates each sample's fundamental frequency and compares it with the stored root. On two pitched presets (16 samples), the stored root matched the measured pitch exactly. After the fix, every pitched preset reports `delta 0`.
 
 This is why the acceptance tests include a pitch gate: see [Acceptance gates](design.md#3-acceptance-gates).
 
@@ -68,7 +68,7 @@ A WAV `smpl` chunk carries only a root note and loop points. It **cannot express
 ## Lessons learned
 
 1. The audit proved every byte of audio and every zone field self-consistent while the root-note *interpretation* was wrong. Only measuring the actual pitch of the audio caught it. Validate against physical reality, not just against your own parser.
-2. A field that is zero in one preset type may be load-bearing in another. `fixed_pitch` and the real root were invisible while only drum kits were examined.
+2. A field that is zero in one preset type may be load-bearing in another. The fixed-pitch flag and the real root were invisible while only drum kits were examined.
 3. Zero-filled output files (all NUL bytes, correct sizes) were traced to memory pressure on the machine during a run, not to a bug. Re-running fixed it. If output looks structurally wrong, check the bytes before suspecting the generator.
 
 ## Comparison with MSE-Extract-Tool
