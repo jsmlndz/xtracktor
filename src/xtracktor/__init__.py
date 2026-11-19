@@ -31,4 +31,4 @@ Invariants - a change that breaks one of these is a bug
 7. `sfz` stays separate from `extract`.
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

@@ -15,12 +15,16 @@
 #
 # When output changes ON PURPOSE, update REFERENCE to the new fingerprint.
 #
+# The test bank is built in a new temporary folder for each run, which is
+# removed when the script exits, even after a failure or Ctrl-C. That folder
+# is the only thing the script ever deletes. Logs, the manifest and the
+# fingerprint stay in RESULTS_DIR.
+#
 # Exit status: 0 if every gate passes, 1 otherwise.
 # Works with macOS's stock bash 3.2 and on Linux.
 
 X="${1:?usage: bash baseline.sh PATH/TO/xtracktor.pyz [RESULTS_DIR]}"
 R="${2:-$PWD/baseline-$(date +%Y%m%d-%H%M%S)}"
-FX="${FX:-/tmp/fx}"
 
 if [ ! -f "$X" ]; then
   echo "not found: $X" >&2
@@ -28,11 +32,21 @@ if [ ! -f "$X" ]; then
 fi
 
 # sha256 of manifest.txt for xtracktor 1.2.0 - every WAV and SFZ it extracts
-# from the fixture. Unchanged in 1.2.1, which changed only a report line.
+# from the fixture. Unchanged in 1.2.1, which changed only a report line, and
+# in 1.2.2, which changed only this script.
 REFERENCE="08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298"
 
+# A new, empty temporary folder for the test bank. mktemp creates it with a
+# unique name, so it can't be an existing folder; it is removed on exit.
+FX=$(mktemp -d "${TMPDIR:-/tmp}/xtracktor-baseline.XXXXXX") || {
+  echo "could not create a temporary folder" >&2
+  exit 2
+}
+trap 'rm -rf "$FX"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
 mkdir -p "$R/logs"
-rm -rf "$FX"
 fail=0
 
 run() {            # run NAME CMD...   -> $R/logs/NAME.txt and NAME.exit

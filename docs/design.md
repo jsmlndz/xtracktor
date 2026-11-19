@@ -2,7 +2,7 @@
 
 [README](../README.md) · [Usage guide](usage.md) · [Format](format.md) · **Design and verification**
 
-- **Version:** 1.2.1
+- **Version:** 1.2.2
 - **What it is:** a standard-library-only Python CLI that turns `.mse` sample banks into per-preset WAV folders plus one SFZ instrument per preset, and proves the result correct.
 - **History:** consolidated from five single-purpose scripts (`mse_index.py`, `pitch_check.py`, `wav_check.py`, `mse_survey.py`, `make_quirk_fixture.py`) into one tool, without changing a byte of output.
 
@@ -65,13 +65,13 @@ python3 tools/build_pyz.py
 bash tools/baseline.sh dist/xtracktor.pyz results
 ```
 
-It builds the synthetic test bank, runs every command against it, and reports five checks. It exits 1 if any fail:
+It builds the synthetic test bank in a new temporary folder, runs every command against it, and reports five checks. It exits 1 if any fail. The temporary folder is removed when the script exits, even after a failure or Ctrl-C, and is the only thing the script deletes; logs, the manifest and the fingerprint stay in the results folder.
 
 1. **GATE 1:** `zonecheck` → `VERDICT: zone layout holds for every record`
 2. **GATE 2:** `extract --apply`, then `audit --zones` → `VERDICT: COMPLETE AND BYTE-ACCURATE`
 3. **GATE 3:** `pitch` on the pitched test preset → `VERDICT: every stored root matches the measured pitch`
 4. **HEALTH:** `wavcheck` → `ok 13`
-5. **MATCH:** the SHA-256 of the output manifest (every WAV and SFZ written) equals the reference fingerprint. For 1.2.0 and 1.2.1 that is `08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298`. It is a hash of synthetic test output, not a secret.
+5. **MATCH:** the SHA-256 of the output manifest (every WAV and SFZ written) equals the reference fingerprint. For 1.2.0, 1.2.1 and 1.2.2 that is `08c98592455aeeebd90c5beebb9a32fad2d265b318a3d49aa39cc67826ae2298`. It is a hash of synthetic test output, not a secret.
 
 A passing run ends like this:
 
@@ -139,9 +139,19 @@ The [CI workflow](../.github/workflows/ci.yml) runs `baseline.sh` on Linux and m
 - **One report line changed:** the `zones` legend. Every other command prints the same as 1.2.0 on the test bank, and the output manifest is identical.
 - **Test bank:** 5 × PASS on Python 3.9, 3.10, 3.11, 3.12 and 3.13 (Linux), against the unchanged reference.
 
+**1.2.2:**
+
+- **Only `baseline.sh` changed;** the tool and its output are identical to 1.2.1.
+- **Test bank:** 5 × PASS on Python 3.9, 3.10, 3.11, 3.12 and 3.13 (Linux), against the unchanged reference.
+- **Clean-up:** no temporary folder is left behind after a passing run, a failing run, Ctrl-C (exit 130) or a kill signal (exit 143), and a folder named by an `FX` environment variable is left untouched.
+
 ## 6. Change history
 
 The [changelog](../CHANGELOG.md) has the same history in summary form.
+
+**1.2.2: safer acceptance script.**
+
+- **`baseline.sh`:** builds the test bank in a new temporary folder (`mktemp -d`) and removes only that folder on exit. Before, it ran `rm -rf` on `/tmp/fx`, or on the folder named by an `FX` environment variable, without checking it.
 
 **1.2.1: cosmetic fix.**
 
