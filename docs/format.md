@@ -36,7 +36,7 @@ This is why the acceptance tests include a pitch gate: see [Acceptance gates](de
 
 ## Audio characteristics
 
-Uniform across every sample examined: **44,100 Hz, 2 channels, 16-bit, uncompressed, unencrypted.**
+Uniform across every sample examined: **44,100 Hz, 2 channels, 16-bit, uncompressed.**
 
 ## Known anomaly
 
