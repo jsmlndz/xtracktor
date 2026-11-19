@@ -12,11 +12,11 @@ xtracktor is a command-line tool written in Python, using only the standard libr
 
 ## Why
 
-I built the tool because, while working with a plug-in, I noticed the size of the VST was very large, which led me to ask if there were any treasures hidden inside.
+While working with a plug-in I noticed the size of the VST was very large which led me to ask if there were any treasures hidden inside.
 
 ## Results
 
-On a commercial sample library (three banks, about 2.4 GB):
+On a sample library (three banks, about 2.4 GB):
 
 - **2,051 samples from 3 banks → 206 preset instruments**, each a folder of WAVs plus one `.sfz`
 - **Every sample verified byte for byte** against the bank: the SHA-256 audit reports `COMPLETE AND BYTE-ACCURATE`, 2,051/2,051
