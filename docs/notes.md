@@ -2,10 +2,6 @@
 
 [Design and verification](design.md)
 
-`.mse` is the bank format of a cross-platform tool that holds every sample of an instrument together with the zone data (key ranges, velocity layers, root notes and loops) that makes it playable.
-
-This page documents the format as far as [xtracktor](../README.md) needs it.
-
 ## Contents
 
 - [Root notes should be analyzed](#root-notes-should-be-analyzed)
