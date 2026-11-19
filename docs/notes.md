@@ -67,8 +67,8 @@ A WAV `smpl` chunk carries only a root note and loop points. It **cannot express
 ## Lessons learned
 
 1. The audit proved every byte of audio and every zone field self-consistent while the root-note *interpretation* was wrong. Only measuring the actual pitch of the audio caught it. Validate against physical reality, not just against your own parser.
-3. `fixed_pitch` and the real root were invisible while only drum kits were examined.
-4. Zero-filled output files (all NUL bytes, correct sizes) were traced to memory pressure on the machine during a run, not to a bug. Re-running fixed it. If output looks structurally wrong, check the bytes before suspecting the generator.
+2. A field that is zero in one preset type may be load-bearing in another. `fixed_pitch` and the real root were invisible while only drum kits were examined.
+3. Zero-filled output files (all NUL bytes, correct sizes) were traced to memory pressure on the machine during a run, not to a bug. Re-running fixed it. If output looks structurally wrong, check the bytes before suspecting the generator.
 
 ## Comparison with MSE-Extract-Tool
 
