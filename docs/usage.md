@@ -168,7 +168,7 @@ VERDICT: COMPLETE AND BYTE-ACCURATE - every expected sample is present and its a
 
 **`wavcheck`** confirms every file is a structurally valid WAV: `13 file(s) checked` / `ok 13`.
 
-On a full library the end of `extract --apply` and the full audit look like this (2,051 samples; paths and bank names redacted):
+On a full library of 2,051 samples, the end of `extract --apply` and the full audit look like this:
 
 ![End of extract --apply and audit --zones on a full library: 2,051 samples written into 206 preset folders, all 2,051 audited ok, verdict COMPLETE AND BYTE-ACCURATE](images/xtracktor_extract.png)
 
@@ -355,7 +355,7 @@ bash tools/baseline.sh dist/xtracktor.pyz results/check-$(date +%Y%m%d)
 
 Expect five `PASS` lines. The test bank is identical on every machine and Python version, so the fingerprint is too. [Acceptance gates](design.md#3-acceptance-gates) explains each check.
 
-The build and the five checks on macOS (paths redacted):
+The build and the five checks on macOS:
 
 ![Terminal on macOS: building xtracktor.pyz, then baseline.sh reporting PASS for GATE 1, GATE 2, GATE 3, HEALTH and MATCH, with 17 output files fingerprinted](images/xtracktor_checks.png)
 

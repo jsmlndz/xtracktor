@@ -24,7 +24,7 @@ On a sample library (three banks, about 2.4 GB):
 - **Root notes verified by measuring the actual pitch** of the audio: `delta 0` on every pitched preset
 - **Plays correctly in DirectWave** (FL Studio), with correct key mapping and pitch
 
-*Extraction and full audit on the commercial library (paths and bank names redacted):*
+*Extraction and full audit on the commercial library:*
 
 ![End of extract --apply and audit --zones on the commercial library: 2,051 samples written into 206 preset folders, all 2,051 audited ok, verdict COMPLETE AND BYTE-ACCURATE](docs/images/xtracktor_extract.png)
 

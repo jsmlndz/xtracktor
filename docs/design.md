@@ -157,9 +157,9 @@ The [changelog](../CHANGELOG.md) has the same history in summary form.
 
 - **`zones`:** the report's legend line printed `%%midi` / `%%<=frames` instead of `%midi` / `%<=frames`. The bug was inherited from the original script, and nothing reads that line.
 
-**1.2.0: generic test bank.**
+**1.2.0: test bank renamed.**
 
-- **Renamed** the synthetic test bank's bank, preset, file and header names to generic ones. Every quirk is still reproduced.
+- **Renamed** the synthetic test bank's bank, preset, file and header names. Every quirk is still reproduced.
 - **New reference fingerprint** in `baseline.sh`, because the test bank's output changed.
 
 **1.1.0: deliberate output changes.**

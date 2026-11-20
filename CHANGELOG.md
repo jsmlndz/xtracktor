@@ -20,7 +20,7 @@ The [verification record](docs/design.md#5-verification-record) lists how each v
 
 ### Changed
 
-- The synthetic test bank uses generic bank, preset, file and header names. It still reproduces every quirk of the real banks.
+- Renamed the synthetic test bank's bank, preset, file and header names. It still reproduces every quirk of the real banks.
 - New reference fingerprint in `tools/baseline.sh`, because the test bank's output changed.
 - The engine is unchanged: every module except the test bank is identical to 1.1.0 apart from comments and the version number.
 
