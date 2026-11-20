@@ -1,8 +1,8 @@
 # xtracktor usage guide
 
-[README](../README.md) · **Usage guide** · [Format](format.md) · [Design and verification](design.md)
+[README](../README.md) · **Usage guide** · [Notes](notes.md) · [Design and verification](design.md)
 
-`xtracktor` turns `.mse` sample banks into playable sampler instruments: one folder per preset, containing WAV files and one `.sfz` instrument. It can also prove the result is correct and help you inspect banks you haven't seen before. ([What is an `.mse` bank?](format.md))
+`xtracktor` turns `.mse` sample banks into playable sampler instruments: one folder per preset, containing WAV files and one `.sfz` instrument. It can also prove the result is correct and help you inspect banks you haven't seen before.
 
 This guide covers:
 - [**Part 1:**](#part-1-from-mse-banks-to-preset-sfz-instruments) the main workflow, from `.mse` banks to verified preset SFZ instruments.
@@ -191,7 +191,7 @@ BP002.wav     C3    48.03  0.918     48       0  matches stored root
   VERDICT: every stored root matches the measured pitch
 ```
 
-Why this matters: an earlier version read the wrong field as the root note, and pitched presets played up to 39 semitones sharp while the byte-for-byte audit still passed. See [Root notes](format.md#root-notes-the-subtlety-that-caused-a-real-bug).
+Why this matters: an earlier version read the wrong field as the root note, and pitched presets played up to 39 semitones sharp while the byte-for-byte audit still passed. See [Root notes](notes.md#root-notes-should-be-analyzed).
 
 > **Run `pitch` on pitched presets (pianos, synths, pads), not drum kits.** A drum zone deliberately plays at its natural pitch, so its root is the key that triggers it, not the note it sounds. On a kit the deltas are meaningless, and the verdict can wrongly say the roots disagree.
 
@@ -226,7 +226,7 @@ A pitched preset loaded in DirectWave. Each zone's key range and root note come 
 | `pitch_keytrack=0` | Drum zones only: don't transpose with the key |
 | `loop_mode`, `loop_start`, `loop_end` | The sustain loop |
 
-The SFZ matters because a WAV's own `smpl` chunk can only store a root note and loop points. Key ranges and velocity layers live only in the SFZ (see [Why SFZ as well as `smpl`](format.md#why-sfz-as-well-as-smpl)).
+The SFZ matters because a WAV's own `smpl` chunk can only store a root note and loop points. Key ranges and velocity layers live only in the SFZ (see [Why SFZ as well as `smpl`](notes.md#why-sfz-as-well-as-smpl)).
 
 ### The whole workflow in one block
 
@@ -257,9 +257,6 @@ python3 xtracktor.pyz survey "$BANKS/<bank>.mse" --names-only --max 40
 
 ```
 STRINGS  51 total: 14 PATH, 37 NAME
-0x00000009  NAME  TEST-Q
-0x00000010  NAME  First Preset
-0x00000272  NAME  GUI-01-640x480.jpg
 ...
 0x00000296  NAME  3-4
 0x000002b9  NAME  +9-:

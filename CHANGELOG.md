@@ -4,6 +4,12 @@ All notable changes to xtracktor are documented here. The format is based on [Ke
 
 The [verification record](docs/design.md#5-verification-record) lists how each version was tested.
 
+## [1.2.2]
+
+### Fixed
+
+- `tools/baseline.sh` builds the test bank in a new temporary folder for each run and removes only that folder when it exits, including after a failure or Ctrl-C. Before, it deleted `/tmp/fx` (or the folder named by an `FX` environment variable) without checking what was in it. The tool itself and its output are unchanged, and so is the reference fingerprint.
+
 ## [1.2.1]
 
 ### Fixed
@@ -48,5 +54,6 @@ Five single-purpose scripts (`mse_index.py`, `pitch_check.py`, `wav_check.py`, `
 - Atomic writes: Ctrl-C during `extract` no longer leaves a partial WAV under its real name. Nothing is left behind, and the exit status is 130.
 - `verify --max` now works; it was a no-op.
 
+[1.2.2]: https://github.com/jsmlndz/xtracktor/releases/tag/v1.2.2
 [1.2.1]: https://github.com/jsmlndz/xtracktor/releases/tag/v1.2.1
 [1.2.0]: https://github.com/jsmlndz/xtracktor/releases/tag/v1.2.0
